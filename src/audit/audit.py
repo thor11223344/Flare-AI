@@ -8,7 +8,13 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-from sklearn.ensemble import RandomForestRegressor
+import os
+try:
+    from snapml import RandomForestRegressor
+    RF_JOBS = os.cpu_count() or 2
+except ImportError:
+    from sklearn.ensemble import RandomForestRegressor
+    RF_JOBS = 2
 from sklearn.model_selection import cross_val_score
 from src import config
 from src.data import db
@@ -96,7 +102,7 @@ def proxy_check(df_tracts) -> dict:
     t = df_tracts.dropna(subset=config.ENV_FEATURES[:4])
     X = t[["vegetation", "slope", "elevation", "wui_proximity"]]
     y = t.median_income.rank(pct=True)
-    r2 = cross_val_score(RandomForestRegressor(200, max_depth=4, random_state=config.SEED, n_jobs=2), X, y,
+    r2 = cross_val_score(RandomForestRegressor(200, max_depth=4, random_state=config.SEED, n_jobs=RF_JOBS), X, y,
                          cv=5, scoring="r2")
     corr = float(np.corrcoef(t.income_quintile, t.vegetation)[0, 1])
     return dict(env_to_income_cv_r2=float(r2.mean()), income_vs_vegetation_corr=corr,
