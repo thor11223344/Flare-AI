@@ -1,0 +1,18 @@
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4
+xgboost>=2.0
+statsmodels>=0.14
+shap>=0.45
+streamlit>=1.50
+pydeck>=0.9
+plotly>=5.20
+pytest>=8.0
+geopandas>=1.0
+requests>=2.30
+matplotlib>=3.8
+onnxmltools>=1.12
+onnxruntime>=1.16
+skl2onnx>=1.15
+onnxconverter-common>=1.14
+# Optional live IBM Z & watsonx connections: ibm_db, ibm-watsonx-ai

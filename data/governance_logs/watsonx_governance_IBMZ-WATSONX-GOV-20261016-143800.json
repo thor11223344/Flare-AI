@@ -1,0 +1,62 @@
+{
+  "governance_event_id": "IBMZ-WATSONX-GOV-20261016-143800",
+  "timestamp_utc": "2026-10-16T14:38:00.362032+00:00",
+  "platform": {
+    "enterprise_host": "IBM z16 (Machine Type 3931)",
+    "operating_system": "z/OS v2.5 / Linux on IBM Z",
+    "database_system_of_record": "IBM Db2 for z/OS v13",
+    "acceleration_engine": "IBM Telum AI On-Chip Coprocessor",
+    "governance_plane": "IBM watsonx.governance Enterprise v2.1"
+  },
+  "model_metadata": {
+    "model_name": "Wildfire-Risk-Environmental-XGBoost",
+    "model_version": "1.4.0-prod",
+    "model_type": "Gradient Boosted Trees (XGBoost / ONNX Runtime)",
+    "feature_scope": "STRICT_ENVIRONMENTAL_ONLY (Demographics Strictly Excluded)",
+    "input_features": [
+      "mean_slope_deg",
+      "canopy_cover_pct",
+      "surface_fuel_loading",
+      "mean_wind_speed_mph",
+      "days_above_35c",
+      "drought_index_spei",
+      "historic_burn_count_20yr",
+      "vegetation_dryness_vcf",
+      "mean_annual_temp_c"
+    ],
+    "target_variable": "fire_occurred (Seasonal Fire Occurrence)"
+  },
+  "data_lineage": {
+    "tracts_with_risk_sha256": "4ae0638845505dd50c4e4d5c10349c68b5514c78729d141d2a712d8724714c2f",
+    "total_tracts_evaluated": 1050,
+    "total_policies_audited": 200000,
+    "data_calibration_status": "Synthetic data calibrated to public aggregates; real policy data is private."
+  },
+  "validation_performance": {
+    "evaluation_strategy": "Temporal Split (Seasons < 2021 train, Seasons >= 2021 test)",
+    "test_roc_auc": 0.7398,
+    "test_brier_score": 0.1165,
+    "expected_calibration_error": 0.0921
+  },
+  "fairness_and_equity_audit": {
+    "planted_penalty_benchmark": 0.05,
+    "recovered_penalty_coef": 0.05659,
+    "recovered_penalty_95ci": [
+      0.05601,
+      0.05717
+    ],
+    "unexplained_premium_surcharge_q1_pct": 25.92,
+    "disparate_impact_ratio_q1": 0.6659,
+    "four_fifths_rule_compliant": false,
+    "proxy_leakage_r_squared": 0.052
+  },
+  "regulatory_compliance_determination": {
+    "regulatory_frameworks": [
+      "California Department of Insurance (CDI) Wildfire Mitigation Regulations",
+      "Consumer Financial Protection Bureau (CFPB) Fair Lending Testing Guidelines",
+      "NIST AI Risk Management Framework (AI RMF 1.0)"
+    ],
+    "compliance_status": "FLAGGED_FOR_HUMAN_OVERSIGHT",
+    "findings_summary": "AUDIT WARNING: Quintile 1 policies exhibit Disparate Impact Ratio of 0.666 (Threshold: 0.800). An unexplained premium surcharge of +25.9% was detected after controlling for physical wildfire risk and home mitigation. Human regulatory review required before renewal execution."
+  }
+}

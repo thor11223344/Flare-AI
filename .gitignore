@@ -1,0 +1,35 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Large Raw Data Downloads & GIS shapefile unzips (can be auto-downloaded by geo loader)
+data/raw/*.zip
+data/raw/cb_2022_06_tract_500k/
+
+# IDE / Editor artifacts
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

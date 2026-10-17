@@ -1,0 +1,82 @@
+{
+  "validation_strategy": "Temporal Split (Seasons < 2021 train, Seasons >= 2021 test)",
+  "train_samples": 5250,
+  "test_samples": 4200,
+  "features": [
+    "mean_slope_deg",
+    "canopy_cover_pct",
+    "surface_fuel_loading",
+    "mean_wind_speed_mph",
+    "days_above_35c",
+    "drought_index_spei",
+    "historic_burn_count_20yr",
+    "vegetation_dryness_vcf",
+    "mean_annual_temp_c"
+  ],
+  "metrics": {
+    "test_roc_auc": 0.7398,
+    "test_brier_score": 0.1165,
+    "expected_calibration_error": 0.0921,
+    "test_precision": 0.8556,
+    "test_recall": 0.9874,
+    "test_f1": 0.9168
+  },
+  "calibration_curve": {
+    "prob_true": [
+      0.7,
+      0.5962,
+      0.5987,
+      0.6929,
+      0.7304,
+      0.8053,
+      0.9322
+    ],
+    "prob_pred": [
+      0.3677,
+      0.4665,
+      0.5506,
+      0.6515,
+      0.7505,
+      0.8559,
+      0.9546
+    ]
+  },
+  "shap_importance": [
+    {
+      "feature": "canopy_cover_pct",
+      "mean_abs_shap": 0.45368
+    },
+    {
+      "feature": "mean_slope_deg",
+      "mean_abs_shap": 0.43244
+    },
+    {
+      "feature": "historic_burn_count_20yr",
+      "mean_abs_shap": 0.29141
+    },
+    {
+      "feature": "surface_fuel_loading",
+      "mean_abs_shap": 0.27882
+    },
+    {
+      "feature": "drought_index_spei",
+      "mean_abs_shap": 0.19642
+    },
+    {
+      "feature": "days_above_35c",
+      "mean_abs_shap": 0.14845
+    },
+    {
+      "feature": "mean_wind_speed_mph",
+      "mean_abs_shap": 0.1117
+    },
+    {
+      "feature": "vegetation_dryness_vcf",
+      "mean_abs_shap": 0.07186
+    },
+    {
+      "feature": "mean_annual_temp_c",
+      "mean_abs_shap": 0.04864
+    }
+  ]
+}

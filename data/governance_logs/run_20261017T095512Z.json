@@ -1,0 +1,93 @@
+{
+  "run_id": "20261017T095512Z",
+  "timestamp_utc": "2026-10-17T09:55:12.620361+00:00",
+  "model": {
+    "name": "wildfire-risk-xgb",
+    "version": "5912575b1b6a8cab",
+    "features": [
+      "vegetation",
+      "slope",
+      "elevation",
+      "wui_proximity",
+      "drought_index",
+      "wind_speed",
+      "temp_anomaly",
+      "fires_prior5"
+    ],
+    "demographics_used_as_inputs": false,
+    "train_years": [
+      2010,
+      2019
+    ],
+    "test_years": [
+      2020,
+      2023
+    ],
+    "onnx_deployment": {
+      "onnx_model_hash": "2ca0fb7767d083c8",
+      "target_coprocessor": "IBM Telum (z16)",
+      "format": "ONNX",
+      "in_place_scoring_ready": true
+    }
+  },
+  "data": {
+    "hash": "f3f018b5d322fb5e",
+    "seed": 42,
+    "n_policies": 195000,
+    "synthetic": true
+  },
+  "performance": {
+    "test_auc": 0.7200014003875103,
+    "brier_skill": 0.019382036314514406,
+    "calibration_mae": 0.011006922648637556
+  },
+  "ibmz_telum_readiness": {
+    "latency_benchmark": {
+      "benchmark_timestamp": "2026-10-17T07:09:26.544992+00:00",
+      "single_row_benchmark": {
+        "batch_size": 1,
+        "calls_measured": 10000,
+        "includes_preprocessing": true,
+        "latency_p50_ms": 0.02300000051036477,
+        "latency_p90_ms": 0.030499999411404133,
+        "latency_p95_ms": 0.03319999996165279,
+        "latency_p99_ms": 0.03900200046700779,
+        "latency_mean_ms": 0.024706800008607387,
+        "latency_min_ms": 0.014599998394260183,
+        "latency_max_ms": 0.8206000002246583
+      },
+      "batch_throughput_benchmark": {
+        "total_rows_scored": 100000,
+        "total_time_sec": 0.10294000000067172,
+        "throughput_rows_per_sec": 971439.6735899308
+      },
+      "hardware_environment": {
+        "label": "laptop CPU, not Telum",
+        "platform": "Windows-10-10.0.26300-SP0",
+        "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+        "is_telum": false
+      },
+      "deployment_assessment": "expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum",
+      "honesty_note": "Ran on laptop CPU, not Telum. Results do not prove Telum performance. Model is expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum."
+    },
+    "hardware_environment": "laptop CPU, not Telum",
+    "deployment_assessment": "expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum",
+    "hardware_note": "Ran on laptop CPU, not Telum. Results do not prove Telum performance. Expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum."
+  },
+  "fairness": {
+    "disparate_impact_ratio_renewal": 0.9623956172544014,
+    "nonrenewal_rate_ratio_q1_vs_q5": 2.011444921316166,
+    "unexplained_premium_gap_q1_log": 0.1600787364365256,
+    "unexplained_nonrenewal_gap_q1_logodds": 0.49917817723342417,
+    "proxy_check_r2": -0.006816540928731607,
+    "risk_model_auc_by_income_quintile": {
+      "1": 0.7228413560591871,
+      "2": 0.6852539680643968,
+      "3": 0.714512503333799,
+      "4": 0.762491100221971,
+      "5": 0.7156967050416833
+    }
+  },
+  "status": "REVIEW_REQUIRED",
+  "note": "watsonx.governance factsheet log. Tracks model provenance, cryptographic hashes, fairness gates, and Telum deployment readiness."
+}
