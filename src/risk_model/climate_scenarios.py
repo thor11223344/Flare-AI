@@ -1,6 +1,10 @@
 """Multi-Year Climate Scenario Projections (2025-2035).
 Simulates wildfire hazard trajectories and flags Insurance Availability Cliffs
 under +1.5°C and +2.0°C global warming scenarios for California census tracts.
+
+NOTE: The 15% availability cliff threshold and warming scenarios (+1.5°C, +2.0°C)
+are illustrative assumptions for policy stress-testing, not predictive forecasts
+or empirical market withdrawal thresholds.
 """
 from typing import Dict, Any, List, Optional
 import numpy as np
@@ -18,25 +22,26 @@ SCENARIOS = {
         "description": "Observed contemporary weather averages and fuel moisture levels."
     },
     "warming_1_5c": {
-        "name": "+1.5°C Moderate Warming (2030 Projection)",
+        "name": "+1.5°C Moderate Warming (2030 Projection - Illustrative)",
         "temp_shift_c": 1.2,
         "drought_shift": 0.08,
         "wind_shift_mph": 1.0,
-        "description": "IPCC SSP2-4.5 intermediate pathway: prolonged drying season, +8% drought anomaly, +1.0 mph peak gusts."
+        "description": "Illustrative assumption based on intermediate drying: prolonged season, +8% drought anomaly, +1.0 mph peak gusts."
     },
     "warming_2_0c": {
-        "name": "+2.0°C Severe Warming (2035 Projection)",
+        "name": "+2.0°C Severe Warming (2035 Projection - Illustrative)",
         "temp_shift_c": 2.2,
         "drought_shift": 0.16,
         "wind_shift_mph": 2.5,
-        "description": "IPCC SSP3-7.0 high-emission pathway: critical fuel aridity, +16% drought severity, intensified Diablo/Santa Ana winds."
+        "description": "Illustrative assumption based on high-emission pathway: critical fuel aridity, +16% drought severity, intensified peak winds."
     }
 }
 
 
 def project_tract_climate_scenarios(tract_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
     """Evaluate wildfire burn probability across all census tracts under each climate scenario.
-    Identifies 'Availability Cliff' tracts where burn probability exceeds 15% (underwriting exclusion threshold).
+    Identifies 'Availability Cliff' tracts where burn probability exceeds 15% (illustrative assumption
+    for insurer voluntary underwriting withdrawal).
     """
     if tract_df is None:
         tract_df = db.read_table("tracts")

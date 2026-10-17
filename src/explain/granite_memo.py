@@ -54,8 +54,8 @@ def generate_granite_regulatory_memo(
     nr_rate = float(a_row["nonrenewal_rate"])
     nr_gap_pp = float(a_row["nr_gap_pp"]) * 100.0
 
-    # Determine compliance posture under Fair Lending Four-Fifths (80%) doctrine
-    # If lowest income quintile pays > 15% unexplained premium or has > 1.25x non-renewal disparity
+    # Determine compliance posture under Fair Lending Four-Fifths (80%) screening heuristic
+    # If lowest income quintile pays > 12% unexplained premium or has > 1.5 pp non-renewal disparity
     status = "NON_COMPLIANT_FLAG" if prem_gap > 12.0 or nr_gap_pp > 1.5 else "COMPLIANT_BASELINE"
 
     # Attempt live watsonx.ai if requested and configured
@@ -95,11 +95,14 @@ def generate_granite_regulatory_memo(
             except Exception as e:
                 print(f"[granite_memo] Warning: Live watsonx.ai query failed ({e}); using deterministic template.")
 
-    # High-fidelity deterministic regulatory memorandum (Granite style)
+    # High-fidelity deterministic regulatory memorandum (template)
+    from_header = "Office of Actuarial AI Governance (IBM Granite on watsonx.ai)" if live_used else "Office of Actuarial AI Governance (Regulatory Deterministic Template)"
+    engine_name = "IBM watsonx.ai Granite-13b-chat" if live_used else "IBM Granite Regulatory Template (Deterministic Fallback)"
+
     if ai_generated_text is None:
         ai_generated_text = f"""MEMORANDUM FOR RATE ENFORCEMENT & UNDERWRITING REVIEW
 TO:         California Department of Insurance (CDI) Rate Regulation Division
-FROM:       Office of Actuarial AI Governance (Powered by IBM Granite on z16)
+FROM:       {from_header}
 DATE:       {pd.Timestamp.now('UTC').strftime('%B %d, %Y')}
 SUBJECT:    STATUTORY EXAMINATION OF TRACT {tract_id} ({county.upper()} COUNTY)
 CARRIER:    {carrier_name}
@@ -108,15 +111,15 @@ STATUS:     {'ACTION REQUIRED: ADVERSE SELECTION DISPARITY DETECTED' if status =
 1. EXECUTIVE FINDING & STATUTORY SCOPE
 Under the supervisory authority of California Insurance Code § 1861.05 (Proposition 103) and 10 CCR § 2644, premium rates must be based on legitimate loss-cost actuarial factors and must not be unfairly discriminatory.
 
-Our decoupled econometric audit of Census Tract {tract_id} ({county} County) has identified a statistically significant unexplained premium surcharge of +{prem_gap:.1f}% alongside an excess non-renewal disparity of {nr_gap_pp:+.1f} percentage points relative to baseline cohorts facing identical wildfire hazards. Because this census tract falls in Socioeconomic Income Quintile {income_q} (median household income: ${median_inc:,.0f}), the observed pricing disparity is not accounted for by physical hazard.
+Our decoupled econometric audit of Census Tract {tract_id} ({county} County) has identified an unexplained premium surcharge of +{prem_gap:.1f}% alongside an excess non-renewal disparity of {nr_gap_pp:+.1f} percentage points relative to baseline cohorts facing identical wildfire hazards. Evaluated under fair-lending screening heuristics (four-fifths doctrine), because this census tract falls in Socioeconomic Income Quintile {income_q} (median household income: ${median_inc:,.0f}), the observed pricing disparity is not accounted for by physical hazard.
 
 2. ENVIRONMENTAL DECOUPLING & CONVOLUTIONAL CONTROLS
-Physical wildfire hazard for Tract {tract_id} is evaluated at {risk_score*100:.1f}% annual burn probability utilizing solely verified topographical, climatological, and fuel loading indicators (including fuel biomass, slope gradient, and historical fire perimeters). No demographic variables are ingested by the underlying XGBoost/ONNX risk model.
+Physical wildfire hazard for Tract {tract_id} is evaluated at {risk_score*100:.1f}% annual burn probability utilizing solely physical topographical, climatological, and fuel loading indicators. No demographic variables are ingested by the underlying XGBoost/ONNX risk model.
 
-Furthermore, the econometric audit explicitly controls for structural building vintage (home age) and verified property mitigation (such as defensible perimeter clearing and Class A fire-rated roofing). The residual +{prem_gap:.1f}% pricing spread represents an unexplained geographic penalty that disproportionately burdens lower-income policyholders without actuarial justification.
+Furthermore, the econometric audit explicitly controls for structural building vintage (home age) and verified property mitigation. The residual +{prem_gap:.1f}% pricing spread represents an unexplained geographic penalty that disproportionately burdens lower-income policyholders without actuarial justification.
 
 3. MANDATED REGULATORY REMEDY
-In accordance with CDI Bulletin 2022-5 and fair-lending disparate impact guidelines, {carrier_name} is hereby directed to:
+In accordance with CDI Bulletin 2022-5 and fair-lending screening heuristics (four-fifths rule), {carrier_name} is hereby directed to:
   a. Submit granular loss-cost and territorial relativities for Census Tract {tract_id} within 30 days.
   b. Provide verified property-level inspection data demonstrating any unobserved hazard factors.
   c. If loss-cost justification is absent, recalculate baseline territorial relativities to eliminate the +{prem_gap:.1f}% socioeconomic discrepancy.
@@ -128,9 +131,9 @@ In accordance with CDI Bulletin 2022-5 and fair-lending disparate impact guideli
         "income_quintile": income_q,
         "median_income": median_inc,
         "compliance_status": status,
-        "model_engine": "IBM watsonx.ai Granite-13b-chat" if live_used else "IBM Granite Regulatory Model Template (Offline Certified)",
-        "model_provider": "IBM watsonx.ai",
-        "engine": "IBM watsonx.ai Granite-13b-chat" if live_used else "IBM Granite Regulatory Model Template (Offline Certified)",
+        "model_engine": engine_name,
+        "model_provider": "IBM watsonx.ai" if live_used else "FLare-AI Governance Engine",
+        "engine": engine_name,
         "is_live_watsonx": live_used,
         "generated_timestamp": pd.Timestamp.now("UTC").isoformat(),
         "generated_at": pd.Timestamp.now("UTC").strftime("%Y-%m-%d %H:%M UTC"),

@@ -28,6 +28,15 @@ Across California, intensifying wildfires have triggered a severe insurance avai
 ![California Tracts Choropleth](docs/img/ca_choropleth_map.png)
 
 ### 2. Real Public Data Loaders (with Transparent Fallback)
+
+| Data Source | Real Records | Placeholder Records | Status / Source Description |
+| :--- | :--- | :--- | :--- |
+| **Census ACS 5-Year (Income, Race, Tenure)** | `0` | `9,109` | Synthetic, hand-parameterized placeholder fallback |
+| **FEMA National Risk Index (Hazard Frequency & Loss)** | `0` | `9,109` | Synthetic, hand-parameterized placeholder fallback |
+| **CDC Social Vulnerability Index (SVI)** | `0` | `9,109` | Synthetic, hand-parameterized placeholder fallback |
+| **Underwriting Policies & Claims** | `0` | `195,000` | 100% synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data |
+| **Tract Cartographic Boundaries** | `9,109` | `0` | Official US Census TIGER/Line (`cb_2022_06_tract_500k`) |
+
 - **Census ACS 5-Year API:** Extracts median household income (`B19013`), median home value (`B25077`), renter share (`B25003`), and race demographics (`B02001`).
 - **FEMA National Risk Index (NRI):** Extracts wildfire hazard frequency, exposure, and expected annual loss fields.
 - **CDC Social Vulnerability Index (SVI):** Extracts tract vulnerability percentiles (`RPL_THEMES`).
@@ -59,18 +68,18 @@ Across California, intensifying wildfires have triggered a severe insurance avai
 
 *All figures reflect actual verified results from `data/audit_results.json` and `data/risk_metrics.json`.*
 
-| Metric | Result | Interpretation |
+| Metric | Result | Interpretation / Derivation |
 | :--- | :--- | :--- |
-| **Planted Ground-Truth Penalty** | $+0.150$ log-points | Synthetic ground truth |
-| **Econometrically Recovered Coef** | **$+0.160$** (95% CI: $[0.126, 0.194]$) | **Recovered within statistical tolerance** ($p = 5.17 \times 10^{-20}$) |
-| **Unexplained Q1 Premium Gap** | **$+17.4\%$** | Lowest-income tracts pay $+17.4\%$ more for identical physical hazard |
-| **Non-Renewal Log-Odds Penalty**| **$+0.499$** (Planted: $0.500$) | Non-renewal spikes in lower-income areas ($p = 3.01 \times 10^{-28}$) |
-| **Non-Renewal Rate Ratio (Q1/Q5)** | **$1.63\times$** | $4.4\%$ non-renewal in Q1 vs $2.7\%$ in Q5 |
-| **Risk Model Temporal Test AUC** | **$0.720$** | Validated out-of-time on unseen future fire seasons (2020–2023) |
-| **Brier Skill Score** | **$+0.019$** (Calibration MAE: $0.011$) | Beats climatological baseline |
-| **Environmental Proxy Leakage ($R^2$)**| **$0.059$** | Geography carries minimal demographic information |
-| **500-Run Tract Placebo Test** | **$+0.02\%$** (95% range: $[-2.75\%, +2.86\%]$) | Permuted tract income centers at 0% (6.2% CI exclusion matches 5% alpha) |
-| **ONNX Runtime Latency** | **$p50 = 0.05\text{ms}, p99 = 0.12\text{ms}$** | Ran on laptop CPU, not Telum; expected to be deployable on Telum via ONNX/zDLC |
+| **Planted Ground-Truth Penalty** | `+0.150` log-points | Synthetic ground truth planted in data generation |
+| **Econometrically Recovered Coef** | **`+0.160`** (95% CI: `[0.126, 0.194]`) | **Recovered within statistical tolerance** ($p = 5.17e-20$) |
+| **Unexplained Q1 Premium Gap** | **`+17.4%`** | Lowest-income tracts pay `+17.4%` more for identical physical hazard |
+| **Non-Renewal Log-Odds Penalty**| **`+0.499`** (Planted: `0.500`) | Disparity in non-renewals ($p = 3.01e-28$) |
+| **Non-Renewal Rate Ratio (Q1/Q5)** | **`2.01x`** | Elevated non-renewal rate in Q1 vs Q5 |
+| **Risk Model Temporal Test AUC** | **`0.720`** | Out-of-time temporal holdout evaluation (2020–2023) |
+| **Brier Skill Score** | **`+0.019`** (Calibration MAE: `0.011`) | Outperforms baseline climatological rate |
+| **Environmental Proxy Leakage ($R^2$)**| **`-0.007`** | Physical environment carries minimal demographic information |
+| **500-Run Tract Placebo Test** | **`+0.02%`** (95% range: `[-2.75%, +2.86%]`) | Randomized tract income test centers at 0% (empirical false-positive rate ~6.2%) |
+| **ONNX Runtime Latency** | **p50 = 0.02 ms, p99 = 0.04 ms** | Evaluated on local host CPU; deployable to Telum via ONNX/zDLC |
 
 ---
 
@@ -130,7 +139,7 @@ cat requirements-ibmz.txt
 1. **Demographics for Auditing Only:** Demographics (income, race, poverty, home value) are strictly excluded from predictive physical hazard modeling. They are used exclusively in post-hoc econometric regressions to audit market disparities.
 2. **Controlling for Legitimate Differences:** Some premium variation is actuarially legitimate (e.g. older homes with wooden roofs cost more to repair). Our OLS econometric formulation explicitly controls for structural age and certified wildfire mitigations.
 3. **Uncertainty Transparency:** The risk score presents bootstrap credible intervals ($\pm \sigma$) on every tract.
-4. **Synthetic Data Disclosure:** **Synthetic policy data calibrated to public aggregates (USFS, FEMA NRI, Census ACS); real private insurance policy data is proprietary.** Results illustrate structural fairness methodology and do not constitute legal findings of intentional discrimination.
+4. **Synthetic Data Disclosure:** **Synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data. Real private insurance policy data is proprietary.** Results illustrate structural fairness methodology and do not constitute legal findings of intentional discrimination.
 
 ---
 

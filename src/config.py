@@ -29,6 +29,6 @@ SQLITE_PATH = Path(os.getenv("SQLITE_PATH", DATA_DIR / "wildfire.db"))
 DB2_DSN = os.getenv("DB2_DSN", "")
 USE_WATSONX = os.getenv("USE_WATSONX", "false").lower() == "true"
 
-SYNTHETIC_NOTE = ("Synthetic data calibrated to public aggregates; real policy data is private. "
-                  "Tract geometry is replaced by centroids; environmental/demographic values are "
-                  "placeholders unless real loaders are enabled.")
+SYNTHETIC_NOTE = ("Synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data. "
+                  "Real policy data is private. Tract geometry uses real boundaries with centroids; "
+                  "environmental/demographic values are placeholders unless real loaders are enabled.")

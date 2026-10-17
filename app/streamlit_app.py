@@ -79,15 +79,15 @@ svi_real, svi_ph = get_source_counts(svi_cache)
 
 st.sidebar.markdown(f"""
 - **Census ACS (Income/Race):**  
-  `{acs_real:,}` real · `{acs_ph:,}` placeholder ({'Calibrated fallback' if acs_real == 0 else 'Live API'})
+  `{acs_real:,}` real · `{acs_ph:,}` placeholder ({'Fallback' if acs_real == 0 else 'Live API'})
 - **FEMA NRI (Hazard/EAL):**  
-  `{fema_real:,}` real · `{fema_ph:,}` placeholder ({'Calibrated fallback' if fema_real == 0 else 'Live GIS'})
+  `{fema_real:,}` real · `{fema_ph:,}` placeholder ({'Fallback' if fema_real == 0 else 'Live GIS'})
 - **CDC SVI (Vulnerability):**  
-  `{svi_real:,}` real · `{svi_ph:,}` placeholder ({'Calibrated fallback' if svi_real == 0 else 'Live CDC'})
+  `{svi_real:,}` real · `{svi_ph:,}` placeholder ({'Fallback' if svi_real == 0 else 'Live CDC'})
 - **Underwriting Policies:**  
-  `195,000` policies (100% synthetic, calibrated to CDI aggregates)
+  `195,000` policies (100% synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data)
 """)
-st.sidebar.caption("⚠️ Placeholder data is calibrated from empirical distributions and is never described as real.")
+st.sidebar.caption("⚠️ Placeholder data is synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data, and is never described as real.")
 
 # ---------------- headline metrics ----------------
 rec, fair = audit["recovery"], audit["fairness"]
@@ -146,8 +146,8 @@ Audit Status:      Flagged for Actuarial Review
 
 4. RESPONSIBLE AI STATEMENT & GOVERNANCE
 --------------------------------------------------------------------------------
-Demonstration calibrated to public aggregates. Disparities indicate unexplained
-pricing penalties requiring regulatory inspection; they do not prove intentional bias.
+Demonstration data is synthetic, hand-parameterized; not calibrated to real insurer, CDI or USFS data.
+Disparities indicate unexplained pricing penalties requiring regulatory inspection; they do not prove intentional bias.
 Model provenance verified under watsonx.governance framework with SHA-256 lineage.
 """
 
@@ -415,7 +415,8 @@ with tab_audit:
 
 with tab_climate:
     st.subheader("🌡️ 10-Year Climate Scenarios & Insurance Availability Cliff (2025–2035)")
-    st.caption("Simulating multi-year wildfire hazard amplification under moderate (+1.5°C) and severe (+2.0°C) warming using IBM Telum ONNX scoring runtime. Detects tracts crossing the 15% annual burn probability threshold where private admitted insurers systematically withdraw.")
+    st.caption("Simulating multi-year wildfire hazard amplification under moderate (+1.5°C) and severe (+2.0°C) warming using ONNX scoring runtime. Detects tracts crossing the 15% annual burn probability threshold.")
+    st.info("ℹ️ **Illustrative Assumptions:** The 15% availability cliff threshold and +1.5°C / +2.0°C warming pathways are **illustrative assumptions** for stress-testing and policy exploration, not calibrated empirical market withdrawal cliffs or downscaled climate models.")
 
     if isinstance(climate_summary, dict) and "scenarios" in climate_summary:
         sc_sum = climate_summary["scenarios"]

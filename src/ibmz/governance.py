@@ -31,8 +31,25 @@ def log_run(risk_metrics: dict, audit: dict) -> str:
             benchmark_data = None
 
     ts = datetime.now(timezone.utc)
+    import platform
+    executed_on = dict(
+        machine=platform.machine(),
+        system=platform.system(),
+        platform=platform.platform(),
+        processor=platform.processor() or "unknown",
+        python_version=platform.python_version()
+    )
+    target_environment = dict(
+        operating_system="IBM z/OS / Linux on IBM Z (s390x)",
+        database="IBM Db2 for z/OS",
+        hardware_accelerator="IBM Telum (z16/z17) on-chip AI acceleration (nnpa)",
+        governance_platform="watsonx.governance"
+    )
+
     rec = dict(
         run_id=ts.strftime("%Y%m%dT%H%M%SZ"), timestamp_utc=ts.isoformat(),
+        executed_on=executed_on,
+        target_environment=target_environment,
         model=dict(name="wildfire-risk-xgb", version=model_hash, features=risk_metrics["features"],
                    demographics_used_as_inputs=False, train_years=risk_metrics["train_years"],
                    test_years=risk_metrics["test_years"],
@@ -44,9 +61,9 @@ def log_run(risk_metrics: dict, audit: dict) -> str:
                          calibration_mae=risk_metrics["calibration_mae"]),
         ibmz_telum_readiness=dict(
             latency_benchmark=benchmark_data,
-            hardware_environment="laptop CPU, not Telum",
+            hardware_environment=f"Executed on {executed_on['system']} ({executed_on['machine']}), target is Telum coprocessor",
             deployment_assessment="expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum",
-            hardware_note="Ran on laptop CPU, not Telum. Results do not prove Telum performance. Expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum."
+            hardware_note="Executed on local/host CPU. Results do not prove Telum performance. Expected to be deployable on Telum via ONNX/IBM Z Deep Learning Compiler; not tested on Telum."
         ),
         fairness=dict(
             disparate_impact_ratio_renewal=audit["fairness"]["disparate_impact_ratio_renewal"],

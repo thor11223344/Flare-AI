@@ -24,9 +24,12 @@ htmlcov/
 Thumbs.db
 desktop.ini
 
-# Large Raw Data Downloads & GIS shapefile unzips (can be auto-downloaded by geo loader)
-data/raw/*.zip
-data/raw/cb_2022_06_tract_500k/
+# Data directory (exclude generated databases, logs, models; keep .gitkeep and samples)
+data/*
+!data/.gitkeep
+!data/samples/
+!data/samples/**
+!data/sample_*
 
 # IDE / Editor artifacts
 .vscode/
